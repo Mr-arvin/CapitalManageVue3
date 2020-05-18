@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 
-// $route GET api/users/login
+// $route GET api/users/register
 // @desc 返回请求的json数据
 // @access public
 router.get("/login",(req,res) =>  {
