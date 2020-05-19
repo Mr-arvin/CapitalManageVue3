@@ -2,9 +2,11 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 const gravatar = require('gravatar');
-
 const User = require("../../models/user");
+const keys = require("../../config/keys");
+
 
 // $route GET api/users/register
 // @desc 返回请求的json数据
@@ -55,11 +57,19 @@ router.post("/login",(req,res) => {
             if(!user){
                 return res.status(404).json({email:"用户不存在!"})
             }else{
-                // 解密
+                // 密码匹配
                 bcrypt.compare(password, user.password)
                       .then(isMatch => {
                           if(isMatch){
-                              return res.json({msg:"success"})
+                            // jwt.sign("规则","加密名字","过期时间","箭头函数")
+                            const rule = {id:user._id,name:user.name}
+                            jwt.sign(rule,keys.secretOrKey,{expiresIn:3600},(err,token) => {
+                                if(err) throw err;
+                                res.json({
+                                    success:true,
+                                    token:"mrwu" + token
+                                })
+                            })
                           }else{
                               return res.status(400).json({psssword:" 密码错误！"})
                           }
