@@ -6,15 +6,6 @@ const gravatar = require('gravatar');
 
 const User = require("../../models/user");
 
-// $route GET api/users/login
-// @desc 返回请求的json数据
-// @access public
-router.get("/login",(req,res) =>  {
-    res.json({
-        msg:"login works"
-    })
-})
-
 // $route GET api/users/register
 // @desc 返回请求的json数据
 // @access public
@@ -46,6 +37,33 @@ router.post("/register",(req,res) => {
                                .catch(err => console.log(err))
                     });
                 });
+            }
+        })
+})
+
+// $route GET api/users/login
+// @desc 返回token jwt passport
+// @access public
+
+router.post("/login",(req,res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    // 查询数据库 
+    User.findOne({email})  //es6 等同于email:email
+        .then((user) => {
+            if(!user){
+                return res.status(404).json({email:"用户不存在!"})
+            }else{
+                // 解密
+                bcrypt.compare(password, user.password)
+                      .then(isMatch => {
+                          if(isMatch){
+                              return res.json({msg:"success"})
+                          }else{
+                              return res.status(400).json({psssword:" 密码错误！"})
+                          }
+                      })
             }
         })
 })
