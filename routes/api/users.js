@@ -35,7 +35,24 @@ router.post("/register",(req,res) => {
                         newUser.password  = hash;
 
                         newUser.save()
-                               .then(user =>  res.json(user))
+                               .then(user =>  {
+                                    // res.json(user)
+                                    // jwt.sign("规则","加密名字","过期时间","箭头函数")
+                                    const rule = {id:user._id,name:user.name}
+                                    jwt.sign(rule,keys.secretOrKey,{expiresIn:3600},(err,token) => {
+                                        if(err) throw err;
+                                        res.json({
+                                            success:true,
+                                            token:"mrwu" + token,
+                                            _id:user._id,
+                                            name:user.name,
+                                            email:user.email,
+                                            avatar:user.avatar,
+                                            password:user.password,
+                                            date:user.date
+                                        })
+                                    })
+                               })
                                .catch(err => console.log(err))
                     });
                 });
