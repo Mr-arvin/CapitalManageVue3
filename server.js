@@ -1,11 +1,17 @@
 const express = require("express");
-const  mongoose =  require("mongoose");
+const mongoose =  require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 const passport = require("passport");
 
+
 // DB config
 const db = require('./config/keys').mongoURI;
+
+// Connect to mongodb
+mongoose.connect(db)
+.then(() =>  console.log("MongoDB connected"))
+.catch(err => console.log(err));
 
 // 跨域请求
 app.all('*', function (req, res, next) {
@@ -28,11 +34,6 @@ require("./config/passport")(passport);
 
 // 引入users.js
 const users = require("./routes/api/users")
-
-// Connect to mongodb
-mongoose.connect(db)
-.then(() =>  console.log("MongoDB connected"))
-.catch(err => console.log(err));
 
 
 // 使用routes
