@@ -6,9 +6,16 @@ const jwt = require('jsonwebtoken');
 const gravatar = require('gravatar');
 const User = require("../../models/user");
 const keys = require("../../config/keys");
+const passport = require("passport");
 
 
-// $route GET api/users/register
+
+
+router.get("/test",(req,res) => {
+    res.json({msg:"login works"})
+})
+
+// $route POST api/users/register
 // @desc 返回请求的json数据
 // @access public
 router.post("/register",(req,res) => {
@@ -60,7 +67,7 @@ router.post("/register",(req,res) => {
         })
 })
 
-// $route GET api/users/login
+// $route POST api/users/login
 // @desc 返回token jwt passport
 // @access public
 
@@ -78,13 +85,13 @@ router.post("/login",(req,res) => {
                 bcrypt.compare(password, user.password)
                       .then(isMatch => {
                           if(isMatch){
-                            // jwt.sign("规则","加密名字","过期时间","箭头函数")
+                            // jwt.sign("rule规则","加密名字","过期时间","箭头函数")
                             const rule = {id:user._id,name:user.name}
                             jwt.sign(rule,keys.secretOrKey,{expiresIn:3600},(err,token) => {
                                 if(err) throw err;
                                 res.json({
                                     success:true,
-                                    token:"mrwu" + token
+                                    token:"Bearer " + token
                                 })
                             })
                           }else{
@@ -92,6 +99,20 @@ router.post("/login",(req,res) => {
                           }
                       })
             }
+        })
+})
+
+
+// $route GET api/users/current
+// @desc return current user
+// @access Private 只有持有token令牌的执行  
+// router.get("/current","验证token",(req,res)   jwt为验证方式
+router.get("/current",passport.authenticate("jwt",{session:false}),(req,res) => {
+        // res.json(req.user);
+        res.json({
+            id:req.user.id,
+            name:req.user.name,
+            email:req.user.email
         })
 })
 
