@@ -31,7 +31,8 @@ router.post("/register",(req,res) => {
                     name:req.body.name,
                     email:req.body.email,
                     avatar:avatarUrl,
-                    password:req.body.password
+                    password:req.body.password,
+                    identity: req.body.identity
                 });
 
                 // 加密
@@ -55,6 +56,7 @@ router.post("/register",(req,res) => {
                                             name:user.name,
                                             email:user.email,
                                             avatar:user.avatar,
+                                            identity:user.identity,
                                             password:user.password,
                                             date:user.date
                                         })
@@ -86,13 +88,17 @@ router.post("/login",(req,res) => {
                       .then(isMatch => {
                           if(isMatch){
                             // jwt.sign("rule规则","加密名字","过期时间","箭头函数")
-                            const rule = {id:user._id,name:user.name}
+                            const rule = {
+                                id:user._id,
+                                name:user.name,
+                                avatar:user.avatar,
+                                identity:user.identity
+                            }
                             jwt.sign(rule,keys.secretOrKey,{expiresIn:3600},(err,token) => {
                                 if(err) throw err;
                                 res.json({
                                     success:true,
-                                    token:"Bearer " + token
-                                })
+                                    token:"Bearer " + token                                })
                             })
                           }else{
                               return res.status(400).json({psssword:" 密码错误！"})
@@ -108,11 +114,12 @@ router.post("/login",(req,res) => {
 // @access Private 只有持有token令牌的执行  
 // router.get("/current","验证token",(req,res)   jwt为验证方式
 router.get("/current",passport.authenticate("jwt",{session:false}),(req,res) => {
-        // res.json(req.user);
+        console.log(res)
         res.json({
             id:req.user.id,
             name:req.user.name,
-            email:req.user.email
+            email:req.user.email,
+            identity:req.user.identity
         })
 })
 
