@@ -33,11 +33,14 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // 引入users.js
-const users = require("./routes/api/users")
+const users = require("./routes/api/users");
+// 引入profiles.js
+const profiles = require("./routes/api/profiles");
 
 
 // 使用routes
 app.use("/users",users);
+app.use("/profiles",profiles);
 
 const port = process.env.PORT || 5000;
 

@@ -1,7 +1,7 @@
 const JwtStrategy = require('passport-jwt').Strategy,
       ExtractJwt = require('passport-jwt').ExtractJwt;
 const keys = require("../config/keys");
-const User = require('../models/user');
+const User = require('../models/User');
 
 var opts = {}
 //得到token
