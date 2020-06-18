@@ -59,10 +59,46 @@ router.get("/:id",passport.authenticate('jwt',{session: false}),(req,res)  => {
             if(!profile) {
                 res.status(404).json('没有任何内容');
             }else {
-               res.json(profile)   
+               res.json(profile);
             }
         })
         .catch(err => res.status(404).json(err));     
+})
+
+// @route post api/profiles/edit/:id
+// @desc 编辑信息接口
+// @access private（类型）
+
+router.post("/edit/:id",passport.authenticate('jwt',{session: false}),(req,res)  => {
+    const profileFields = {};
+
+    if(req.body.type) profileFields.type = req.body.type;
+    if(req.body.describe) profileFields.describe = req.body.describe;
+    if(req.body.income) profileFields.income = req.body.income;
+    if(req.body.expend) profileFields.expend = req.body.expend;
+    if(req.body.cash) profileFields.cash = req.body.cash;
+    if(req.body.remark) profileFields.remark = req.body.remark;
+
+    Profile.findOneAndUpdate(
+        {_id: req.params.id},
+        {$set: profileFields}, //更新$set
+        {new: true} //新的东西
+    ).then(profile => res.json(profile))
+})
+
+// @route GET api/profiles/delete/:id
+// @desc 删除信息接口
+// @access private（类型）
+
+router.delete("/delete/:id",passport.authenticate('jwt',{session: false}),(req,res)  => {
+    Profile.findByIdAndRemove(
+        {_id: req.params.id}
+    ).then(profile => {
+        // console.log(profile)
+        res.json(profile)
+        // profile.save().then(profile => res.json(profile)) ;
+    }).catch(err => res.status(404).json("删除失败！"))
+    
 })
 
 module.exports = router;
