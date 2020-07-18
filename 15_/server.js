@@ -3,7 +3,10 @@ const mongoose =  require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 const passport = require("passport");
+const path = require('path');
 
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploads')));
 
 // DB config
 const db = require('./config/keys').mongoURI;
@@ -30,17 +33,21 @@ app.use(bodyParser.json());
 // passport 初始化
 app.use(passport.initialize());
 
+
 require("./config/passport")(passport);
 
 // 引入users.js
 const users = require("./routes/api/users");
 // 引入profiles.js
 const profiles = require("./routes/api/profiles");
+// 引入upload.js
+const uploads = require("./routes/api/uploads");
 
 
 // 使用routes
 app.use("/users",users);
 app.use("/profiles",profiles);
+app.use("/uploads",uploads);
 
 const port = process.env.PORT || 5000;
 

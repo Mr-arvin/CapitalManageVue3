@@ -25,6 +25,8 @@ router.post("/add",passport.authenticate('jwt',{session: false}),(req,res) => {
     if(req.body.cash) profileFields.cash = req.body.cash;
     if(req.body.remark) profileFields.remark = req.body.remark;
 
+    console.log('333')
+
     new Profile(profileFields).save().then(profile => {
         res.json(profile)
     })
