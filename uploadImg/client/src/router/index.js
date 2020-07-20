@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Index from '../views/Index.vue' 
+import Upload from '../views/Upload.vue' 
+import NotFound from '../views/404.vue' 
 
 Vue.use(VueRouter)
 
@@ -27,6 +29,16 @@ Vue.use(VueRouter)
     path: '/index',
     name: 'index',
     component: Index
+  },
+  {
+    path: '/upload',
+    name: 'upload',
+    component: Upload
+  },
+  {
+    path: '*',
+    name: '404',
+    component: NotFound
   }
 ]
 
